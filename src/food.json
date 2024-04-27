@@ -1,38 +1,38 @@
 [
   {
     "id": 0,
-    "name": "Burger",
-    "picture": "images/burger.jpg",
-    "price": "Lisco, Alabama"
+    "name": "Biryani",
+    "picture": "images/biryani.jpg",
+    "price": "Rs 1000"
   },
   {
     "id": 1,
-    "name": "Pizza",
-    "picture": "images/pizza.jpg",
-    "price": "Tooleville, West Virginia"
+    "name": "Chinese Rice",
+    "picture": "images/chinese.jpg",
+    "price": " Rs 1200"
   },
   {
     "id": 2,
-    "name": "Chicken Wings",
-    "picture": "images/chicken.jpg",
-    "price": "Freeburn, Idaho"
+    "name": "Sandwich",
+    "picture": "images/sandwich.jpg",
+    "price": "Rs 550"
   },
   {
     "id": 3,
-    "name": "Biryani",
-    "picture": "images/biryani.jpg",
-    "price": "Camas, Pennsylvania"
+    "name": "Burger",
+    "picture": "images/burger.jpg",
+    "price": "Rs 450"
   },
   {
     "id": 4,
-    "name": "Chinese Rice",
-    "picture": "images/chinese.jpg",
-    "price": "Gerber, South Dakota"
+    "name": "Chicken Wings",
+    "picture": "images/chicken.jpg",
+    "price": "Rs 900"
   },
   {
     "id": 5,
-    "name": "Sandwich",
-    "picture": "images/sandwich.jpg",
-    "price": 3
+    "name": "Pizza",
+    "picture": "images/pizza.jpg",
+    "price": "Rs 1500"
   }
 ]
