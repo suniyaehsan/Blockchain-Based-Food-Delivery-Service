@@ -1,101 +1,62 @@
-// pragma solidity ^0.5.0;
-
-// contract ShoppingCart {
-//     // Define a struct to represent an item
-//     struct Item {
-//         uint itemId;
-//         string itemName;
-//         uint price;
-//         uint quantity;
-//     }
-//     uint public total_price;
-//     // Define a mapping to store items by their ID
-//     mapping(uint => Item) public items;
-
-//     // Define a function to add items to the cart
-//     function addItem(
-//         uint _itemId,
-//         string memory _itemName,
-//         uint _quantity,
-//         uint _price
-//     ) public {
-//         // Check if the item already exists
-//         if (items[_itemId].itemId != 0) {
-//             items[_itemId].quantity += _quantity;
-//         } else {
-//             items[_itemId] = Item(_itemId, _itemName, _quantity, _price);
-//         }
-//     }
-
-//     // Define a function to calculate the total price of all items in the cart
-//     function calculateTotal() public view returns (uint) {
-//         total_price = 0;
-//         for (uint i = 1; i <= items.lenght; i++) {
-//             total_price += items[i].price * items[i].quantity;
-//         }
-//     }
-// }
-
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.5.0;
 
 contract ShoppingCart {
-    // Define a struct to represent an item
+    // it is added to kepp check if items
+    enum ItemStatus {
+        InProcess,
+        Cancelled,
+        Complete
+    }
     struct Item {
-        uint itemId;
-        string itemName;
+        string name;
         uint price;
         uint quantity;
+        ItemStatus status;
     }
 
-    // Define a mapping to store items by their ID
-    mapping(uint => Item) public items;
+    mapping(address => Item[]) public cart;
 
-    // Array to keep track of item IDs
-    uint[] public itemIds;
+    event ItemAdded(
+        address indexed user,
+        string name,
+        uint price,
+        uint quantity
+    );
+    event OrderCancelled(address indexed user, uint indexed orderId);
 
-    // Variable to store the total price
-    uint public total;
+    //   no need to send qty from fromt end just add 1 need price from user
+    function addItem(string calldata _name, uint _price) external {
+        bool itemFound = false;
 
-    // Define a function to add items to the cart
-    function addItem(
-        uint _itemId,
-        string memory _itemName,
-        uint _price,
-        uint _quantity
-    ) public {
-        // Check if the item already exists
-        if (items[_itemId].itemId != 0) {
-            items[_itemId].quantity += _quantity;
-        } else {
-            items[_itemId] = Item(_itemId, _itemName, _price, _quantity);
-            itemIds.push(_itemId); // Add item ID to the array
+        for (uint i = 0; i < cart[msg.sender].length; i++) {
+            if (
+                keccak256(bytes(cart[msg.sender][i].name)) ==
+                keccak256(bytes(_name)) &&
+                (cart[msg.sender][i].status == ItemStatus.InProcess)
+            ) {
+                cart[msg.sender][i].quantity++;
+                itemFound = true;
+                break;
+            }
         }
+        // this status tracks if user adding item and order is new
+        if (!itemFound) {
+            cart[msg.sender].push(Item(_name, _price, 1, ItemStatus.InProcess));
+        }
+        //   emit event
+        emit ItemAdded(msg.sender, _name, _price, 1);
     }
 
-    // Function to get the number of items in the cart
-    function getItemCount() public view returns (uint) {
-        return itemIds.length;
-    }
+    function checkout() external {
+        Item[] storage items = cart[msg.sender];
+        uint totalAmount = 0;
 
-    // Function to get item details by index
-    function getItemByIndex(
-        uint index
-    ) public view returns (uint, string memory, uint, uint) {
-        uint itemId = itemIds[index];
-        return (
-            items[itemId].itemId,
-            items[itemId].itemName,
-            items[itemId].price,
-            items[itemId].quantity
-        );
-    }
-
-    // Define a function to calculate the total price of all items in the cart
-    function calculateTotal() public {
-        total = 0;
-        for (uint i = 0; i < itemIds.length; i++) {
-            uint itemId = itemIds[i];
-            total += items[itemId].price * items[itemId].quantity;
+        for (uint i = 0; i < items.length; i++) {
+            if (items[i].status == ItemStatus.InProcess) {
+                totalAmount += items[i].price * items[i].quantity;
+                items[i].status = ItemStatus.Complete; // Change status to Complete
+            }
         }
     }
 }

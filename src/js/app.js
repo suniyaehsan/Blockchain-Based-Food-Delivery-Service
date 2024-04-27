@@ -63,7 +63,7 @@ App = {
   },
 
   bindEvents: function () {
-    $(document).on('click', '.btn-adopt', App.handleAdopt);
+    $(document).on('click', '.btn-order', App.handleAdopt);
   },
 
   markAdopted: function () {
